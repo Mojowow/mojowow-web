@@ -11,3 +11,5 @@ Welcome to Mojotrollz
 
 ## Register
 
+<register></register>
+
