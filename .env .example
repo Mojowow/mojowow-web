@@ -1,0 +1,1 @@
+server_database_realmd=mysql://root:root@localhost:3306/vmangos_realmd

@@ -19,36 +19,49 @@ const register = async (
   res: Response,
   _next: NextFunction
 ): Promise<any> => {
-  const { email, username, sha1 } = req.query
+  // Parameters
+  const email = String(req.query.email)
+  const username = String(req.query.username)
+  const sha1 = String(req.query.sha1)
+
   // Invalid EMail
   // TODO confirm EMail
-  if (!validateEmail(String(email))) {
+  if (!validateEmail(email)) {
     return res.status(500).json({ error: `Not a valid EMail: ${email}` })
   }
   // Username to short
-  if (String(username).length < USERNAME_MIN_LENGTH) {
+  if (username.length < USERNAME_MIN_LENGTH) {
     return res.status(500).json({ error: `Username to short: ${username}` })
   }
   // Validate SHA1 Hash
-  if (!isValidSHA1(String(sha1))) {
+  if (!isValidSHA1(sha1)) {
     return res.status(500).json({ error: `Invalid SHA1 Hash: ${sha1}` })
   }
   // Username Taken
   const userTaken = await MySQL.query(
     `SELECT COUNT(*) AS count FROM account WHERE username = ?;`,
-    [String(username)]
+    [username]
   )
+  if (userTaken.error !== null) {
+    return res
+      .status(500)
+      .json({ error: `An error occurred: ${userTaken.error}` })
+  }
+  // Error?
   if (userTaken.result[0].count > 0) {
-    return res.status(500).json({ error: `Username aready taken: ${username}` })
+    return res
+      .status(500)
+      .json({ error: `Username already taken: ${username}` })
   }
 
   // Insert new User
   const result = await MySQL.query(
     `INSERT INTO account (username, email, sha_pass_hash) VALUES (?,?,?)`,
-    [String(username), String(email), String(sha1)]
+    [username, email, sha1]
   )
+  // Error?
   if (result.error !== null) {
-    return res.status(500).json({ error: `An error occured: ${result.error}` })
+    return res.status(500).json({ error: `An error occurred: ${result.error}` })
   }
   res.status(200).json({})
 }

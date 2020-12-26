@@ -1,4 +1,5 @@
 import mysql, { MysqlError } from 'mysql'
+import config from '../../config/'
 
 export default class MySQL {
   private static _instance: MySQL
@@ -7,12 +8,7 @@ export default class MySQL {
   connected: boolean = false
 
   constructor() {
-    this.connection = mysql.createConnection({
-      host: 'localhost',
-      user: 'root',
-      password: 'root',
-      database: 'vmangos_realmd',
-    })
+    this.connection = mysql.createConnection(config.server.database.realmd)
 
     this.connect()
   }
