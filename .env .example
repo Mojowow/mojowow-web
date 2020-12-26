@@ -1,1 +1,3 @@
-server_database_realmd=mysql://root:root@localhost:3306/vmangos_realmd
+SERVER_DATABASE_REALMD=mysql://root:root@localhost:3306/vmangos_realmd
+SERVER_JWTSECRET=mysecret
+PORT=3000

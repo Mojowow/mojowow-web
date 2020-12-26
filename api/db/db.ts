@@ -8,7 +8,7 @@ export default class MySQL {
   connected: boolean = false
 
   constructor() {
-    this.connection = mysql.createConnection(config.server.database.realmd)
+    this.connection = mysql.createConnection(config.SERVER.DATABASE.REALMD)
 
     this.connect()
   }

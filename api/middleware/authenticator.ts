@@ -13,7 +13,7 @@ export const authenticator = function (
     // verifies secret and checks if the token is expired
     jwt.verify(
       token.replace(/^Bearer\s/, ''),
-      config.server.authSecret,
+      config.SERVER.JWTSECRET,
       function (err, _decoded) {
         // TODO
         if (err) {

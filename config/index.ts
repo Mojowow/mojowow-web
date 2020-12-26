@@ -1,15 +1,16 @@
-export const database = {
-  realmd:
-    process.env.server_database_realmd ||
+export const DATABASE = {
+  REALMD:
+    process.env.SERVER_DATABASE_REALMD ||
     'mysql://root:root@localhost:3306/vmangos_realmd',
 }
-export const server = {
-  authSecret: 'mysecret', // secret for generating jwt token
-  database,
+export const SERVER = {
+  JWTSECRET: process.env.SERVER_JWTSECRET || 'mysecret',
+  DATABASE,
+  PORT: process.env.PORT || 3000,
 }
 
 export const config = {
-  server,
+  SERVER,
 }
 
 export default config
