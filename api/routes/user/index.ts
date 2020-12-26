@@ -5,7 +5,6 @@ import register from './register'
 const user = Router()
 
 // Register
-// router.post('/users/register', controller.register)
 user.get('/register', register)
 
 // Login
