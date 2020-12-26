@@ -1,4 +1,4 @@
-import mysql from 'mysql'
+import mysql, { MysqlError } from 'mysql'
 
 export default class MySQL {
   private static _instance: MySQL
@@ -21,19 +21,19 @@ export default class MySQL {
     return this._instance || (this._instance = new this())
   }
 
-  public static query(query: string, callback: Function) {
-    this.instance.connection.query(
-      query,
-      (err: Error, results: Object[], _fields: []) => {
-        if (err) {
-          callback(err)
-        } else if (results.length === 0) {
-          callback(null, [])
-        } else {
-          callback(null, results)
-        }
-      }
-    )
+  public static query(
+    query: string,
+    values?: string[]
+  ): Promise<{
+    error: mysql.MysqlError | null
+    result: any
+    fields: mysql.FieldInfo[] | undefined
+  }> {
+    return new Promise((resolve) => {
+      this.instance.connection.query(query, values, (error, result, fields) => {
+        resolve({ error, result, fields })
+      })
+    })
   }
 
   public static escape(id: any) {

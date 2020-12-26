@@ -34,24 +34,23 @@ const register = async (
     return res.status(500).json({ error: `Invalid SHA1 Hash: ${sha1}` })
   }
   // Username Taken
-  // Unique EMail (no!)
+  const userTaken = await MySQL.query(
+    `SELECT COUNT(*) AS count FROM account WHERE username = ?;`,
+    [String(username)]
+  )
+  if (userTaken.result[0].count > 0) {
+    return res.status(500).json({ error: `Username aready taken: ${username}` })
+  }
 
-  const query = `INSERT INTO account (username, email, sha_pass_hash) VALUES ("${username}","${email}","${sha1}")`
-  MySQL.query(query, (err: Error, results: Object[]) => {
-    if (err) {
-      res.status(400).json({
-        ok: false,
-        err,
-      })
-    } else {
-      res.json({
-        ok: true,
-        realms: results,
-      })
-    }
-  })
-
-  //res.status(200).json({ email, username, sha1 })
+  // Insert new User
+  const result = await MySQL.query(
+    `INSERT INTO account (username, email, sha_pass_hash) VALUES (?,?,?)`,
+    [String(username), String(email), String(sha1)]
+  )
+  if (result.error !== null) {
+    return res.status(500).json({ error: `An error occured: ${result.error}` })
+  }
+  res.status(200).json({})
 }
 
 export default register
