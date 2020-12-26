@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
+import MySQL from '../../db/db'
 
 const USERNAME_MIN_LENGTH = 2
 
@@ -13,11 +14,11 @@ const isValidSHA1 = (sha1: String): boolean => {
 }
 
 // Register
-const register = function (
+const register = async (
   req: Request,
   res: Response,
   _next: NextFunction
-): any {
+): Promise<any> => {
   const { email, username, sha1 } = req.query
   // Invalid EMail
   // TODO confirm EMail
@@ -35,7 +36,22 @@ const register = function (
   // Username Taken
   // Unique EMail (no!)
 
-  res.status(200).json({ email, username, sha1 })
+  const query = `INSERT INTO account (username, email, sha_pass_hash) VALUES ("${username}","${email}","${sha1}")`
+  MySQL.query(query, (err: Error, results: Object[]) => {
+    if (err) {
+      res.status(400).json({
+        ok: false,
+        err,
+      })
+    } else {
+      res.json({
+        ok: true,
+        realms: results,
+      })
+    }
+  })
+
+  //res.status(200).json({ email, username, sha1 })
 }
 
 export default register
