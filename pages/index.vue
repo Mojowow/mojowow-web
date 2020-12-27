@@ -73,7 +73,7 @@ export default Vue.extend({
 
 <script lang="ts">
 export default {
-  async asyncData({ $content }) {
+  async asyncData({ $content }: { $content: Function }) {
     const page = await $content('home').fetch()
     return { page }
   },
